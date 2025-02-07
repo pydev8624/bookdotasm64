@@ -1,68 +1,62 @@
 section .data
-    num1 dq 184467440715445113
-    num2 dq 1544511315445113
-    newline db 10     ; Newline character for formatting
+    num1 dq 12345678       ; First number (stored as 64-bit)
+    num2 dq 98765432       ; Second number (stored as 64-bit)
+    newline db 10          ; Newline character
 
 section .bss
-    result resq 1     ; 8-byte (64-bit) result storage
-    buffer resb 32    ; Buffer for storing converted number
+    result resq 1          ; Space to store the result
 
 section .text
     global _start
 
 _start:
-    ; Load numbers into registers
-    mov rax, [num1]
-    mov rbx, [num2]
-    add rax, rbx      ; Perform addition
-    mov [result], rax ; Store result
+    ; Load num1 into RAX
+    mov rax, [num1]        
+    
+    ; Multiply by num2 (RDX:RAX = RAX * Operand)
+    mul qword [num2]       
+  
+    ; Store the result in memory
+    mov [result], rax      
+    
+    ; Convert result to string for printing
+    call print_result      
 
-    ; Convert the number in RAX to a string
-    mov rdi, buffer   ; Destination buffer
-    call int_to_str
-
-    ; Print the result
-    mov rsi, rdi      ; Pointer to string
-    call print_string
-
-    ; Print newline
-    mov rsi, newline
-    mov rdx, 1        ; Length = 1
-    call print_string
-
-    ; Exit program
+    ; Exit
     mov rax, 60
     xor rdi, rdi
     syscall
 
-; -----------------------
-; Print a null-terminated string
-; Input: RSI -> Address of string
-;        RDX -> Length of string
-; -----------------------
-print_string:
-    mov rax, 1         ; syscall: sys_write
-    mov rdi, 1         ; file descriptor: stdout
-    syscall
-    ret
-
-; -----------------------
-; Convert unsigned integer in RAX to string
-; Output: RDI -> Pointer to converted string
-; -----------------------
-int_to_str:
-    mov rbx, 10         ; Base 10
-    mov rcx, buffer + 31 ; Point to end of buffer
-    mov byte [rcx], 0   ; Null-terminate string
+print_result:
+    ; Convert RAX (result) to string
+    mov rsi, result_buffer + 20  ; Point to end of buffer
+    mov rcx, 10                  ; Divisor (base 10)
+    mov rax, [result]            ; Load result
 
 convert_loop:
-    dec rcx
-    mov rdx, 0
-    div rbx             ; RAX / 10, remainder in RDX
-    add dl, '0'         ; Convert remainder to ASCII
-    mov [rcx], dl
-    test rax, rax       ; If RAX is zero, stop
-    jnz convert_loop
+    dec rsi                       ; Move buffer pointer back
+    xor rdx, rdx                  ; Clear RDX for division
+    div rcx                       ; RAX = RAX / 10, RDX = RAX % 10
+    add dl, '0'                   ; Convert remainder to ASCII
+    mov [rsi], dl                 ; Store character
+    test rax, rax                 ; Check if RAX is zero
+    jnz convert_loop              ; Repeat if not zero
 
-    mov rdi, rcx        ; Return pointer to start of string
+    ; Print the result
+    mov rdx, result_buffer + 20   ; End of buffer
+    sub rdx, rsi                  ; Calculate string length
+    mov rax, 1                    ; syscall: write
+    mov rdi, 1                    ; file descriptor: stdout
+    syscall
+
+    ; Print newline
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, newline
+    mov rdx, 1
+    syscall
+
     ret
+
+section .bss
+    result_buffer resb 21  ; Buffer to store result (max 20 digits)
