@@ -1,6 +1,6 @@
 section .data
-    magsoom db 10
-    magsoom_alaih db 2
+    magsoom dq 10
+    magsoom_alaih dq 2
 
 section .text
     global _start
