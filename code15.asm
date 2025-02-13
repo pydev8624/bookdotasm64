@@ -71,7 +71,7 @@ print_jz:
     mov rax, 1        ; syscall: write
     mov rdi, 1        ; file descriptor: stdout
     syscall
-    jmp end_program   ; Jump to end after printing
+    
 
 print_jnz:
     ; Print the message for JNZ
@@ -81,7 +81,7 @@ print_jnz:
     mov rax, 1        ; syscall: write
     mov rdi, 1        ; file descriptor: stdout
     syscall
-    jmp end_program   ; Jump to end after printing
+    
 
 print_ja:
     ; Print the message for JA
@@ -91,7 +91,7 @@ print_ja:
     mov rax, 1        ; syscall: write
     mov rdi, 1        ; file descriptor: stdout
     syscall
-    jmp end_program   ; Jump to end after printing
+    
 
 print_jb:
     ; Print the message for JB
@@ -101,7 +101,7 @@ print_jb:
     mov rax, 1        ; syscall: write
     mov rdi, 1        ; file descriptor: stdout
     syscall
-    jmp end_program   ; Jump to end after printing
+    
 
 print_jg:
     ; Print the message for JG
@@ -111,7 +111,7 @@ print_jg:
     mov rax, 1        ; syscall: write
     mov rdi, 1        ; file descriptor: stdout
     syscall
-    jmp end_program   ; Jump to end after printing
+    
 
 print_jl:
     ; Print the message for JL
@@ -121,7 +121,7 @@ print_jl:
     mov rax, 1        ; syscall: write
     mov rdi, 1        ; file descriptor: stdout
     syscall
-    jmp end_program   ; Jump to end after printing
+    
 
 print_jcxz:
     ; Print the message for JCXZ
@@ -131,8 +131,6 @@ print_jcxz:
     mov rax, 1        ; syscall: write
     mov rdi, 1        ; file descriptor: stdout
     syscall
-
-end_program:
     ; Exit program
     mov rax, 60        ; syscall: exit
     xor rdi, rdi       ; status: 0
