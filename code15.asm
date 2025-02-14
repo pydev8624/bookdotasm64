@@ -3,17 +3,16 @@
 
 section .data
     ; Strings to print for each jump instruction
-    msg_jz db "JZ (Jump if Zero) executed", 0xA, 0xD
-    msg_jnz db "JNZ (Jump if Not Zero) executed", 0xA, 0xD
-    msg_ja db "JA (Jump if Above) executed", 0xA, 0xD
-    msg_jb db "JB (Jump if Below) executed", 0xA, 0xD
-    msg_jg db "JG (Jump if Greater) executed", 0xA, 0xD
-    msg_jl db "JL (Jump if Less) executed", 0xA, 0xD
-    msg_jcxz db "JCXZ (Jump if CX Zero) executed", 0xA, 0xD
+    msg_jump db "non conditional", 0xA
+    msg_jz db "JZ (Jump if Zero) executed", 0xA
+    msg_jnz db "JNZ (Jump if Not Zero) executed", 0xA
+    msg_ja db "JA (Jump if Above) executed", 0xA
+    msg_jb db "JB (Jump if Below) executed", 0xA
+    msg_jg db "JG (Jump if Greater) executed", 0xA
+    msg_jl db "JL (Jump if Less) executed", 0xA
+    msg_jcxz db "JCXZ (Jump if CX Zero) executed", 0xA
 
-section .bss
-    ; Uninitialized data
-    temp resb 8
+
 
 section .text
     global _start
@@ -24,10 +23,13 @@ _start:
     mov rbx, 5        ; Set RBX = 5
     mov rcx, 0        ; Set RCX = 0
 
-    ; Conditional jumps with corresponding actions
+    ; non Conditional jumps with corresponding actions
+    cmp rax,rbx
+    ; jump
+    jmp print_jump
 
     ; JE / JZ
-    cmp rax, rbx      ; Compare RAX and RBX
+    cmp rax, rbx      ; Compare RAX and RBX cmp-->rax-rbx-->zf=?
     je print_jz        ; Jump if equal (ZF = 1)
 
     ; JNE / JNZ
@@ -62,6 +64,13 @@ _start:
     syscall
 
 ; Printing routines
+
+print_jump:
+    mov rsi,msg_jump
+    mov rdx,16
+    mov rax,1
+    mov rdi,1
+    syscall
 
 print_jz:
     ; Print the message for JZ
@@ -131,6 +140,7 @@ print_jcxz:
     mov rax, 1        ; syscall: write
     mov rdi, 1        ; file descriptor: stdout
     syscall
+
     ; Exit program
     mov rax, 60        ; syscall: exit
     xor rdi, rdi       ; status: 0
