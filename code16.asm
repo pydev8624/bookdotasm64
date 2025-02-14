@@ -1,14 +1,12 @@
 section .data
     msg db "Hello", 0xA  ; "Hello" followed by a newline (ASCII 10)
     len equ $ - msg      ; Length of the message
-
-section .bss
+    num db 5             ; Counter initialized to 5
 
 section .text
     global _start
 
 _start:
-    mov rcx, 5           ; Loop counter (5 times)
 
 loop_start:
     ; Write syscall: write(1, msg, len)
@@ -18,7 +16,9 @@ loop_start:
     mov rdx, len         ; message length
     syscall              ; invoke syscall
 
-    loop loop_start      ; Decrease rcx and jump if rcx > 0
+    dec byte [num]       ; Decrement counter (treating num as a byte)
+    cmp byte [num], 0    ; Compare num with 0
+    jg loop_start        ; Jump back if num is greater than zero
 
     ; Exit syscall: exit(0)
     mov rax, 60          ; syscall number for sys_exit
