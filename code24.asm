@@ -1,7 +1,8 @@
 section .bss
     buffer resb 100    ; Reserve 100 bytes for input
 
-
+section .data
+    ok db 'OK' , 0xA
 
 section .text
     global _start
@@ -17,8 +18,8 @@ _start:
     ; Write user input back to stdout
     mov rax, 1       ; syscall: sys_write
     mov rdi, 1       ; file descriptor: stdout
-    mov rsi, buffer  ; buffer containing input
-    mov rdx, 100     ; number of bytes to write
+    mov rsi, ok  ; buffer containing input
+    mov rdx, 3    ; number of bytes to write
     syscall
 
     ; Exit program
