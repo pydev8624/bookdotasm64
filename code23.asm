@@ -1,6 +1,6 @@
 section .data
-    num dq    11                            ; Binary number to convert
-    buffer db '                    ', 0xA ; Buffer to store the ASCII result, newline at the end
+    num dq    1234                            ; Binary number to convert
+    buffer db '                    ' ; Buffer to store the ASCII result, newline at the end
     ten dq 10                              ; Constant for division
 
 section .text
