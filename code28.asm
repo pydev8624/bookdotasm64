@@ -1,6 +1,6 @@
 section .data
     digit db '12'         ; String '12'
-    ten db 10             ; Store 10 as a byte for division
+    ten dq 10             ; Store 10 as a byte for division
     result db '  ',0xA
 
 
@@ -9,10 +9,12 @@ section .text
 
 _start:
     ; Convert the first character ('1') to integer
+    xor rax,rax
     mov al, byte [digit]   ; Load '1' (ASCII 49) into al
     sub al, '0'             ; Convert ASCII to integer (49 - 48 = 1)
 
     ; Convert the second character ('2') to integer
+    xor rbx,rbx
     mov bl, byte [digit + 1] ; Load '2' (ASCII 50) into bl
     sub bl, '0'             ; Convert ASCII to integer (50 - 48 = 2)
 
