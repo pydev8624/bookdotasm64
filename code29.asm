@@ -1,8 +1,10 @@
 section .data
     digit db '18446744073709551610', 0  ; Null-terminated string of digits
     ten dq 10                           ; Store 10 for division
-    result db '', 0xA         ; Buffer for output (20 digits max + newline)
+    result db '          ', 0xA         ; Buffer for output (20 digits max + newline)
 
+section .bss
+    num resq 1                          ; Reserve space for the number
 
 section .text
     global _start
@@ -10,13 +12,13 @@ section .text
 _start:
     xor rax, rax            ; Clear RAX (will store final number)
     xor rcx, rcx            ; Clear RCX (used for iteration)
-    
+
 convert_loop:
     movzx rbx, byte [digit + rcx] ; Load next character
     test rbx, rbx           ; Check if it's null terminator
     jz done_conversion      ; If null, stop conversion
     sub rbx, '0'            ; Convert ASCII to integer
-    imul rax, rax, [ten]       ; Multiply previous number by 10
+    imul rax, rax, 10       ; Multiply previous number by 10
     add rax, rbx            ; Add current digit
     inc rcx                 ; Move to next character
     jmp convert_loop        ; Repeat
